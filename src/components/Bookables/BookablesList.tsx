@@ -58,21 +58,7 @@ export default function BookablesList({ state, dispatch }: Props) {
       .catch((error) =>
         dispatch({ type: FETCH_BOOKABLES_ERROR, payload: error }),
       );
-  }, []);
-
-  // function stopPresentation() {
-  //   if (timerRef.current) {
-  //     clearInterval(timerRef.current);
-  //   }
-  // }
-  //
-  // useEffect(() => {
-  //   timerRef.current = setInterval(() => {
-  //     dispatch({ type: NEXT_BOOKABLE });
-  //   }, 3000);
-  //
-  //   return stopPresentation;
-  // }, []);
+  }, [dispatch]);
 
   const changeGroup = (event: ChangeEvent<HTMLSelectElement>) => {
     dispatch({
@@ -149,49 +135,6 @@ export default function BookablesList({ state, dispatch }: Props) {
           </button>
         </p>
       </div>
-
-      {bookable && (
-        <div className="bookable-details">
-          <div className="item">
-            <div className="item-header">
-              <h2>{bookable.title}</h2>
-              <span className="controls">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={hasDetails}
-                    onChange={toggleDetails}
-                  />
-                  Show Details
-                </label>
-                <button className={"btn"} onClick={stopPresentation}>
-                  Stop
-                </button>
-              </span>
-            </div>
-
-            <p>{bookable.notes}</p>
-
-            {hasDetails && (
-              <div className="item-details">
-                <h3>Availability</h3>
-                <div className="bookable-availability">
-                  <ul>
-                    {bookable.days.sort().map((d) => (
-                      <li key={d}>{days[d]}</li>
-                    ))}
-                  </ul>
-                  <ul>
-                    {bookable.sessions.map((s) => (
-                      <li key={s}>{sessions[s]}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </Fragment>
   );
 }
