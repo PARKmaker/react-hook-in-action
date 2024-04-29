@@ -1,19 +1,22 @@
-import { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import getData from "../../utils/api.ts";
 import Spinner from "../UI/Spinner.tsx";
-import { TUsers } from "./type.ts";
+import { TUser } from "./type.ts";
 
-export default function UsersList() {
+type Props = {
+  user: TUser | null;
+  setUser: React.Dispatch<React.SetStateAction<TUser | null>>;
+};
+
+export default function UsersList({ user, setUser }: Props) {
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [users, setUsers] = useState<TUsers[] | null>(null);
-  const [userIndex, setUserIndex] = useState(0);
-  const user = users?.[userIndex];
+  const [users, setUsers] = useState<TUser[] | null>(null);
 
   useEffect(() => {
     getData("http://localhost:3001/users")
       .then((data) => {
+        // setUser(data[0]);
         setUsers(data);
         setIsLoading(false);
       })
@@ -21,7 +24,7 @@ export default function UsersList() {
         setError(error);
         setIsLoading(false);
       });
-  }, []);
+  }, [setUser]);
 
   // alternative UI for when there's an error
   if (error) {
@@ -41,26 +44,17 @@ export default function UsersList() {
     <Fragment>
       <ul className="users items-list-nav">
         {users &&
-          users.map((u, i) => (
-            <li key={u.id} className={i === userIndex ? "selected" : undefined}>
-              <button className="btn" onClick={() => setUserIndex(i)}>
+          users.map((u) => (
+            <li
+              key={u.id}
+              className={u.id === user?.id ? "selected" : undefined}
+            >
+              <button className="btn" onClick={() => setUser(u)}>
                 {u.name}
               </button>
             </li>
           ))}
       </ul>
-
-      {user && (
-        <div className="item user">
-          <div className="item-header">
-            <h2>{user.name}</h2>
-          </div>
-          <div className="user-details">
-            <h3>{user.title}</h3>
-            <p>{user.notes}</p>
-          </div>
-        </div>
-      )}
     </Fragment>
   );
 }

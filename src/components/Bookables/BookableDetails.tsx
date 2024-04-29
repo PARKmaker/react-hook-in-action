@@ -1,8 +1,12 @@
-import { TBookable } from "./Types.ts";
+import { TBookable } from "./types.ts";
 import { useState } from "react";
 import { sessions, days } from "../../static.json";
 
-export default function BookableDetails({ bookable }: { bookable: TBookable }) {
+export default function BookableDetails({
+  bookable,
+}: {
+  bookable?: TBookable;
+}) {
   const [hasDetails, setHasDetails] = useState(true);
 
   const toggleDetails = () => {

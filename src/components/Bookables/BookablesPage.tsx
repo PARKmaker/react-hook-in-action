@@ -1,9 +1,9 @@
-import BookablesList from "./BookablesList.tsx";
+import BookablesView from "./BookablesView.tsx";
 
 export default function BookablesPage() {
   return (
     <main className="bookables-page">
-      <BookablesList />
+      <BookablesView />
     </main>
   );
 }

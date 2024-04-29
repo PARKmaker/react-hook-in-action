@@ -1,4 +1,4 @@
-import { TAction, TBookable, TState } from "./Types.ts";
+import { TAction, TBookable, TState } from "./types.ts";
 import {
   FETCH_BOOKABLES_ERROR,
   FETCH_BOOKABLES_REQUEST,

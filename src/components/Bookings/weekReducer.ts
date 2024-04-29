@@ -1,16 +1,18 @@
 import { getWeek } from "../../utils/date-wrangler.ts";
 import { NEXT_WEEK, PREV_WEEK, SET_DATE, TODAY } from "./weekReducerActions.ts";
 
-type TAction = {
+export type TDateAction = {
   type: string;
   payload?: string | number | Date;
 };
 
-type TState = {
+export type TDateState = {
   date: Date;
+  start: Date;
+  end: Date;
 };
 
-export default function weekReducer(state: TState, action: TAction) {
+export default function weekReducer(state: TDateState, action: TDateAction) {
   switch (action.type) {
     case NEXT_WEEK:
       return getWeek(state.date, 7);
