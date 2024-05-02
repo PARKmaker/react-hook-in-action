@@ -1,7 +1,7 @@
-import React, { useState, Fragment, useEffect } from "react";
-import getData from "../../utils/api.ts";
+import React, { Fragment } from "react";
 import Spinner from "../UI/Spinner.tsx";
-import { TUser } from "./type.ts";
+import { TUser } from "../../Types/userType.ts";
+import useFetch from "../../hooks/useFetch.tsx";
 
 type Props = {
   user: TUser | null;
@@ -9,30 +9,23 @@ type Props = {
 };
 
 export default function UsersList({ user, setUser }: Props) {
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [users, setUsers] = useState<TUser[] | null>(null);
-
-  useEffect(() => {
-    getData("http://localhost:3001/users")
-      .then((data) => {
-        // setUser(data[0]);
-        setUsers(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setError(error);
-        setIsLoading(false);
-      });
-  }, [setUser]);
+  const {
+    data: users = [],
+    status,
+    error,
+  } = useFetch("http://localhost:3001/users");
 
   // alternative UI for when there's an error
-  if (error) {
-    return <p>{error.message}</p>;
+  if (status === "error") {
+    if (error instanceof Error) {
+      return <p>{error.message}</p>;
+    }
+
+    return <p>Error</p>;
   }
 
   // alternative UI while users load
-  if (isLoading) {
+  if (status === "loading") {
     return (
       <p>
         <Spinner /> Loading users...

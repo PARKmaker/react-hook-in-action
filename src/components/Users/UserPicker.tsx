@@ -1,25 +1,16 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, useEffect } from "react";
 import Spinner from "../UI/Spinner.tsx";
-import { TUser } from "./type.ts";
-import UserContext, { UserSetContext } from "./UserContext.tsx";
+import { useUser } from "../../hooks/useUser.tsx";
+import useFetch from "../../hooks/useFetch.tsx";
 
 export default function UserPicker() {
-  const [users, setUsers] = useState<TUser[] | null>(null);
+  const { user, setUser } = useUser();
 
-  const user = useContext(UserContext);
-  const setUser = useContext(UserSetContext);
+  const { data: users = [], status } = useFetch("http://localhost:3001/users");
 
   useEffect(() => {
-    const getUsers = async () => {
-      const resp = await fetch("http://localhost:3001/users");
-      const data = await resp.json();
-
-      setUsers(data);
-      setUser(data[0]);
-    };
-
-    getUsers();
-  }, [setUser]);
+    setUser(users[0]);
+  }, [users, setUser]);
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedID = parseInt(e.target.value, 10);
@@ -29,9 +20,12 @@ export default function UserPicker() {
       setUser(selectedUser);
     }
   };
-
-  if (users === null) {
+  if (status === "loading") {
     return <Spinner />;
+  }
+
+  if (status === "error") {
+    return <span>Error!</span>;
   }
 
   return (

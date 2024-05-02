@@ -1,4 +1,4 @@
-import { TBookable } from "./types.ts";
+import { TBookable } from "../../Types/bookableType.ts";
 import { useState } from "react";
 import { sessions, days } from "../../static.json";
 

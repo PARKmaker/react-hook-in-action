@@ -1,4 +1,4 @@
-import { TUser } from "./type.ts";
+import { TUser } from "../../Types/userType.ts";
 
 export default function UserDetail({ user }: { user: TUser | null }) {
   return user ? (

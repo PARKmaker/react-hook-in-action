@@ -1,5 +1,5 @@
-import { TBooking } from "./types.ts";
-import { TBookable } from "../Bookables/types.ts";
+import { TBooking } from "../../Types/bookingType.ts";
+import { TBookable } from "../../Types/bookableType.ts";
 import { Fragment } from "react";
 
 type Props = {

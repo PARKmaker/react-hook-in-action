@@ -24,3 +24,5 @@ export function getWeek(forDate: Date, daysOffset = 0) {
 export function shortISO(date: Date) {
   return date.toISOString().split("T")[0];
 }
+
+export const isDate = (date: string) => !isNaN(Date.parse(date));

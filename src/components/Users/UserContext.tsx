@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useState } from "react";
-import { TUser } from "./type.ts";
+import { TUser } from "../../Types/userType.ts";
 
 // type UserContextType = {
 //   user: TUser | null;

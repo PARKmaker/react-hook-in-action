@@ -1,54 +1,30 @@
-import {
-  Fragment,
-  ChangeEvent,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-  useState,
-} from "react";
+import { ChangeEvent, useRef } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { TBookable } from "./types.ts";
-import getData from "../../utils/api.ts";
-import Spinner from "../UI/Spinner.tsx";
+import { TBookable } from "../../Types/bookableType.ts";
+import { Link, useNavigate } from "react-router-dom";
 
 type Props = {
   bookable: TBookable | undefined;
-  setBookable: Dispatch<SetStateAction<TBookable | undefined>>;
+  // setBookable: Dispatch<SetStateAction<TBookable | undefined>>;
+  bookables: [] | TBookable[];
+  getUrl: (id: number) => string;
 };
 
-export default function BookablesList({ bookable, setBookable }: Props) {
-  const [bookables, setBookables] = useState<TBookable[]>([]);
-  const [error, setError] = useState<boolean | Error>(false);
-  const [isLoading, setIsLoading] = useState(true);
-
+export default function BookablesList({ bookable, bookables, getUrl }: Props) {
   const group = bookable?.group;
-
   const groups = [...new Set(bookables.map((b) => b.group))];
   const bookablesInGroup = bookables.filter((b) => b.group === group);
 
-  // const timerRef = useRef<number | null>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    getData("http://localhost:3001/bookables")
-      .then((bookables) => {
-        setBookable(bookables[0]);
-        setBookables(bookables);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setError(error);
-        setIsLoading(false);
-      });
-  }, [setBookable]);
+  const navigate = useNavigate();
 
   const changeGroup = (event: ChangeEvent<HTMLSelectElement>) => {
     const bookablesInSelectedGroup = bookables.filter(
       (b) => b.group === event.target.value,
     );
 
-    setBookable(bookablesInSelectedGroup[0]);
+    navigate(getUrl(bookablesInSelectedGroup[0].id));
   };
 
   const nextBookable = () => {
@@ -59,20 +35,9 @@ export default function BookablesList({ bookable, setBookable }: Props) {
     const i = bookablesInGroup.indexOf(bookable);
     const nextIndex = (i + 1) % bookablesInGroup.length;
     const nextBookable = bookablesInGroup[nextIndex];
-    setBookable(nextBookable);
+
+    navigate(getUrl(nextBookable.id));
   };
-
-  if (error && error instanceof Error) {
-    return <p>{error.message}</p>;
-  }
-
-  if (isLoading) {
-    return (
-      <p>
-        <Spinner /> Loading bookables...
-      </p>
-    );
-  }
 
   return (
     <div>
@@ -90,9 +55,9 @@ export default function BookablesList({ bookable, setBookable }: Props) {
             key={b.id}
             className={b.id === bookable?.id ? "selected" : undefined}
           >
-            <button className="btn" onClick={() => setBookable(b)}>
+            <Link to={getUrl(b.id)} className={"btn"} replace={true}>
               {b.title}
-            </button>
+            </Link>
           </li>
         ))}
       </ul>

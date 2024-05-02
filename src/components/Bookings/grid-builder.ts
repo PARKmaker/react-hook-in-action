@@ -1,7 +1,7 @@
-import { TBookable } from "../Bookables/types.ts";
+import { TBookable } from "../../Types/bookableType.ts";
 import { addDays, shortISO } from "../../utils/date-wrangler.ts";
 import { sessions as sessionNames } from "../../static.json";
-import { TBookings } from "./types.ts";
+import { TBooking, TBookings } from "../../Types/bookingType.ts";
 
 export default function getGrid(bookable: TBookable, startDate: Date) {
   const dates = bookable.days
@@ -32,8 +32,8 @@ export default function getGrid(bookable: TBookable, startDate: Date) {
   };
 }
 
-export function transformBookings(bookingsArray: any[]) {
-  return bookingsArray.reduce((bookings, booking) => {
+export function transformBookings(bookingsArray: TBooking[]) {
+  return bookingsArray.reduce((bookings: TBookings, booking) => {
     const { session, date } = booking;
 
     if (!bookings[session]) {

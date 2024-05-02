@@ -1,17 +1,9 @@
-import { TBookable } from "../Bookables/types.ts";
-import {
-  Dispatch,
-  Fragment,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import getGrid, { transformBookings } from "./grid-builder.ts";
-import { TDateState } from "./weekReducer.ts";
-import { getBookings } from "../../utils/api.ts";
+import { TBookable } from "../../Types/bookableType.ts";
+import { Dispatch, Fragment, SetStateAction, useEffect } from "react";
+import { TDateState } from "./reducer/weekReducer.ts";
 import Spinner from "../UI/Spinner.tsx";
-import { TBooking, TBookings } from "./types.ts";
+import { TBooking } from "../../Types/bookingType.ts";
+import { useBookings, useGrid } from "../../hooks/bookingsHooks";
 
 type Props = {
   week: TDateState;
@@ -25,51 +17,22 @@ export default function BookingsGrid({
   booking,
   setBooking,
 }: Props) {
-  // 1. 변수
-  const [bookings, setBookings] = useState<TBookings | null>(null);
-  const [error, setError] = useState(false);
-
-  // const { grid, dates, sessions } = useMemo(
-  //   () => (bookable ? getGrid(bookable, week.start) : {}),
-  //   [bookable, week.start],
-  // );
-
-  const { grid, dates, sessions } = useMemo(
-    () =>
-      bookable
-        ? getGrid(bookable, week.start)
-        : { grid: null, sessions: null, dates: null },
-    [bookable, week.start],
+  const { bookings, status, error } = useBookings(
+    bookable?.id,
+    week.start,
+    week.end,
   );
+
+  const { grid, sessions, dates } = useGrid(bookable, week.start);
 
   // 2. 효과
   useEffect(() => {
-    if (bookable) {
-      let doUpdate = true;
-
-      setBookings(null);
-      setError(false);
-      setBooking(null);
-
-      getBookings(bookable.id, week.start, week.end)
-        .then((resp) => {
-          if (doUpdate) {
-            console.log(resp);
-            setBookings(transformBookings(resp));
-          }
-        })
-        .catch(setError);
-
-      return () => {
-        doUpdate = false;
-      };
-    }
-  }, [week, bookable, setBooking]);
+    setBooking(null);
+  }, [week.start, bookable, setBooking]);
 
   if (!grid) {
-    return <p>Loading...</p>;
+    return <p>Waiting for bookable and week details</p>;
   }
-
   // 3. UI 도우미
   const cell = (session: string, date: string) => {
     const cellData = bookings?.[session]?.[date] || grid[session][date];
@@ -80,7 +43,7 @@ export default function BookingsGrid({
       <td
         key={date}
         className={isSelected ? "selected" : undefined}
-        onClick={bookings ? () => setBooking(cellData) : undefined}
+        onClick={status === "success" ? () => setBooking(cellData) : undefined}
       >
         {cellData.title}
       </td>
@@ -89,12 +52,16 @@ export default function BookingsGrid({
 
   return (
     <Fragment>
-      {error && (
+      {status === "error" && (
         <p className="bookingsError">
           {`There was a problem loading the bookings data (${error})`}
         </p>
       )}
-      <table className={bookings ? "bookingsGrid active" : "bookingsGrid"}>
+      <table
+        className={
+          status === "success" ? "bookingsGrid active" : "bookingsGrid"
+        }
+      >
         <thead>
           <tr>
             <th>

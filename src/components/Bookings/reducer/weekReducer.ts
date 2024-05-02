@@ -1,4 +1,4 @@
-import { getWeek } from "../../utils/date-wrangler.ts";
+import { getWeek } from "../../../utils/date-wrangler.ts";
 import { NEXT_WEEK, PREV_WEEK, SET_DATE, TODAY } from "./weekReducerActions.ts";
 
 export type TDateAction = {
