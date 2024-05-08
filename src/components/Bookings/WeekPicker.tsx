@@ -5,7 +5,7 @@ import {
   FaChevronRight,
   FaCalendarCheck,
 } from "react-icons/fa";
-import { useBookingParams } from "../../hooks/bookingsHooks/useBookingParams.tsx";
+import { useBookingParams } from "../../hooks/bookingsHooks";
 import { addDays, shortISO } from "../../utils/date-wrangler.ts";
 
 export default function WeekPicker() {

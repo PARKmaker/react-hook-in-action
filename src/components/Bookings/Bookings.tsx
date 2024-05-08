@@ -5,8 +5,9 @@ import WeekPicker from "./WeekPicker.tsx";
 import BookingsGrid from "./BookingsGrid.tsx";
 import BookingDetail from "./BookingDetail.tsx";
 import { TBooking } from "../../Types/bookingType.ts";
-import { useBookingParams } from "../../hooks/bookingsHooks/useBookingParams.tsx";
+import { useBookingParams } from "../../hooks/bookingsHooks";
 import { useBookings } from "../../hooks/bookingsHooks";
+import BookingsGridSlide from "./BookingsGridSlide.tsx";
 
 export default function Bookings({
   bookable,
@@ -30,11 +31,17 @@ export default function Bookings({
     setBooking(null);
   }, [bookable, weekStart]);
 
+  useEffect(() => {
+    if (booking?.id !== undefined && !selectedBooking) {
+      setBooking(null);
+    }
+  }, [booking, selectedBooking]);
+
   return (
     <div className={"bookings"}>
       <div>
         <WeekPicker />
-        <BookingsGrid
+        <BookingsGridSlide
           week={week}
           bookable={bookable}
           booking={booking}

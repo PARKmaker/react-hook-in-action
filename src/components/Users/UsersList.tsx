@@ -13,7 +13,7 @@ export default function UsersList({ user, setUser }: Props) {
     data: users = [],
     status,
     error,
-  } = useFetch("http://localhost:3001/users");
+  } = useFetch<TUser>("http://localhost:3001/users");
 
   // alternative UI for when there's an error
   if (status === "error") {

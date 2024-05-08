@@ -21,6 +21,8 @@ export default function getGrid(bookable: TBookable, startDate: Date) {
           date,
           title: "",
           bookableId: bookable.id,
+          notes: "",
+          id: -1,
         }),
     );
   });

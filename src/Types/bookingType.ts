@@ -3,8 +3,9 @@ export type TBooking = {
   date: string;
   bookableId: number;
   title: string;
-  notes?: string;
-  bookerId?: string;
+  notes: string;
+  bookerId?: number | string;
+  id: number;
 };
 
 export type TBookings = {

@@ -3,19 +3,17 @@ import { isDate } from "../../utils/date-wrangler.ts";
 
 export function useBookingParams() {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const searchDate = searchParams.get("date");
   const bookableId = searchParams.get("bookableId");
 
   const date =
     searchDate && isDate(searchDate) ? new Date(searchDate) : new Date();
-
   const idInt = parseInt(bookableId as string, 10);
-
   const hasId = !isNaN(idInt);
 
   const setBookingsDate = (date: string) => {
-    const params: Record<string, string> = {};
+    // const params: Record<string, string> = {};
+    const params: { [key: string]: string } = {};
 
     if (hasId) {
       params.bookableId = bookableId || "";

@@ -1,16 +1,22 @@
 import BookablesList from "../Bookables/BookablesList.tsx";
 import Bookings from "./Bookings.tsx";
 import { useBookingParams } from "../../hooks/bookingsHooks/useBookingParams.tsx";
-import useFetch from "../../hooks/useFetch.tsx";
 import { shortISO } from "../../utils/date-wrangler.ts";
 import PageSpinner from "../UI/PageSpinner.tsx";
+import { TBookable } from "../../Types/bookableType.ts";
+import { useQuery } from "@tanstack/react-query";
+import getData from "../../utils/api.ts";
 
 export default function BookingsPage() {
   const {
     data: bookables = [],
-    status,
+    isError,
+    isPending,
     error,
-  } = useFetch("http://localhost:3001/bookables");
+  } = useQuery<TBookable[]>({
+    queryKey: ["bookables"],
+    queryFn: () => getData("http://localhost:3001/bookables"),
+  });
 
   const { date, bookableId } = useBookingParams();
 
@@ -21,25 +27,22 @@ export default function BookingsPage() {
     return date ? `${root}&date=${shortISO(date)}` : root;
   }
 
-  if (status === "error") {
-    if (error instanceof Error) {
-      return <p>{error?.message}</p>;
-    }
-    return <p>Error</p>;
+  if (isError) {
+    return <p>{error?.message}</p>;
   }
 
-  if (status === "loading") {
+  if (isPending) {
     return <PageSpinner />;
   }
 
   return (
     <main className="bookings-page">
       <BookablesList
-        bookable={bookable}
-        bookables={bookables}
+        bookable={bookable as TBookable}
+        bookables={bookables as TBookable[]}
         getUrl={getUrl}
       />
-      <Bookings bookable={bookable} />
+      <Bookings bookable={bookable as TBookable} />
     </main>
   );
 }

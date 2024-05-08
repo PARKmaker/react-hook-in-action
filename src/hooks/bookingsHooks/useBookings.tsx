@@ -15,12 +15,10 @@ export function useBookings(
 
   const queryString = `bookableId=${bookableId}` + `&date=${start}&date=${end}`;
 
-  const query = useFetch(`${urlRoot}?${queryString}`);
+  const query = useFetch<TBooking>(`${urlRoot}?${queryString}`);
 
   return {
-    bookings: query.data
-      ? transformBookings(query.data as unknown as TBooking[])
-      : {},
+    bookings: query.data ? transformBookings(query.data) : {},
     ...query,
   };
 }

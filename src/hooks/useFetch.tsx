@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import getData from "../utils/api.ts";
-import { TUser } from "../Types/userType.ts";
-import { TBookings } from "../Types/bookingType.ts";
 
 type TStatus = "idle" | "loading" | "success" | "error";
 
-export default function useFetch(url: string) {
-  const [data, setData] = useState<TUser[] | TBookings[]>();
+export default function useFetch<T>(url: string) {
+  const [data, setData] = useState<T[]>();
   const [error, setError] = useState<Error | null>(null);
   const [status, setStatus] = useState<TStatus>("idle");
 

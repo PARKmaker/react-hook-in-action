@@ -2,11 +2,14 @@ import { ChangeEvent, useEffect } from "react";
 import Spinner from "../UI/Spinner.tsx";
 import { useUser } from "../../hooks/useUser.tsx";
 import useFetch from "../../hooks/useFetch.tsx";
+import { TUser } from "../../Types/userType.ts";
 
 export default function UserPicker() {
   const { user, setUser } = useUser();
 
-  const { data: users = [], status } = useFetch("http://localhost:3001/users");
+  const { data: users = [], status } = useFetch<TUser>(
+    "http://localhost:3001/users",
+  );
 
   useEffect(() => {
     setUser(users[0]);
